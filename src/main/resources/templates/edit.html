@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>질문 수정</title>
+</head>
+<body>
+	<h1>질문 수정</h1>
+
+	<form th:action="@{'/question/edit/' + ${question.id}}" method="post">
+		<p>
+			<label>카테고리:</label><br/>
+			<input type="text" name="category" th:value="${question.category}" />
+		</p>
+		<p>
+			<label>질문:</label><br/>
+			<textarea name="content" rows="4" cols="50" th:text="${question.content}"></textarea>
+		</p>
+		<p>
+			<label>모범답안:</label><br/>
+			<textarea name="modelAnswer" rows="6" cols="50" th:text="${question.modelAnswer}"></textarea>
+		</p>
+		<p>
+			<button type="submit">수정 완료</button>
+		</p>
+	</form>
+</body>
+</html>

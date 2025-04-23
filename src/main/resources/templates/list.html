@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>질문 목록</title>
+</head>
+<body>
+	<h1>질문 목록</h1>
+
+	<table border="1">
+		<thead>
+			<tr>
+				<th>ID</th>
+				<th>카테고리</th>
+				<th>질문</th>
+				<th>모범답안</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="q : ${questions}">
+				<td th:text="${q.id}">1</td>
+				<td th:text="${q.category}">카테고리</td>
+				<td th:text="${q.content}">질문 내용</td>
+				<td th:text="${q.modelAnswer}">모범답안</td>
+				<td>
+					<a th:href="@{'/question/edit/' + ${q.id}}">수정</a>
+					<form th:action="@{'/question/delete/' + ${q.id}}" method="post" style="display:inline;">
+						<button type="submit" onclick="return confirm('삭제할까요?')">삭제</button>
+					</form>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<br/>
+	<a th:href="@{/question/random}">랜덤 질문 보기</a>
+
+</body>
+</html>

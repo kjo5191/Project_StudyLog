@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>랜덤 질문</title>
+</head>
+<body>
+	<h1>랜덤 질문</h1>
+
+	<div th:if="${question instanceof T(com.studylog.domain.Question)}">
+		<p><strong>카테고리:</strong> <span th:text="${question.category}"></span></p>
+		<p><strong>질문 내용:</strong> <span th:text="${question.content}"></span></p>
+		<p><strong>모범답안:</strong></p>
+		<pre th:text="${question.modelAnswer}"></pre>
+	</div>
+
+	<div th:unless="${question instanceof T(com.studylog.domain.Question)}">
+		<p th:text="${question}"></p>
+	</div>
+	
+	<br/>
+	<a th:href="@{/question/list}">전체 질문 목록 보기</a>
+	<br/>
+	<a th:href="@{/question/new}">질문 추가하기</a>
+
+</body>
+</html>

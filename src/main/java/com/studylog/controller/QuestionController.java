@@ -1,10 +1,6 @@
 package com.studylog.controller;
 
-import com.studylog.domain.Question;
-import com.studylog.repository.QuestionRepository;
-import com.studylog.service.QuestionService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,9 +8,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-import java.util.Random;
+import com.studylog.domain.Question;
+import com.studylog.service.QuestionService;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
@@ -23,7 +22,7 @@ public class QuestionController {
 	@Autowired
     private QuestionService questionService;
 
-//	Repository(DB)관련 모두 Service로 분리
+//	Repository(DB)관련 모두 Service 로 분리
 //	@Autowired
 //	private QuestionRepository questionRepository;
 
@@ -57,11 +56,12 @@ public class QuestionController {
 	public String saveQuestion(Question question) {
 		log.info("@# Controller : Save Question");
 		
-//		questionRepository.save(question);		//Controller가 직접 DB 관여
-		questionService.saveQuestion(question);	//Service에 위임
+//		questionRepository.save(question);		//Controller 가 직접 DB 관여
+		questionService.saveQuestion(question);	//Service 에 위임
 		return "redirect:/question/random";  // 저장 후 랜덤 질문 페이지로 리디렉션
 	}
-	
+
+/*	
 	@GetMapping("/question/list")
 	public String getQuestionList(Model model) {
 		log.info("@# Controller : Get List");
@@ -71,39 +71,22 @@ public class QuestionController {
 		model.addAttribute("questions", questions);
 		return "list";
 	}
-	
-/*
-	@GetMapping("/question/edit/{id}")
-	public String editForm(@PathVariable("id") Long id, Model model) {
-		log.info("@# log : Edit");
-		
-		Question question = questionRepository.findById(id).orElse(null);
-		model.addAttribute("question", question);
-		return "edit";
-	}
+*/
+	@GetMapping("/question/list")
+	public String getQuestionList(@RequestParam(value = "category", required = false) String category, Model model) {
+		log.info("@# Controller : Get List");
 
-	@PostMapping("/question/edit/{id}")
-	public String editSave(@PathVariable("id") Long id, Question updatedQuestion) {
-		log.info("@# log : Edit Save");
-		
-		Question original = questionRepository.findById(id).orElse(null);
-		if (original != null) {
-			original.setCategory(updatedQuestion.getCategory());
-			original.setContent(updatedQuestion.getContent());
-			original.setModelAnswer(updatedQuestion.getModelAnswer());
-			questionRepository.save(original);
+		List<Question> questions;
+
+		if (category == null || category.isBlank()) {
+			questions = questionService.getQuestionList();
+		} else {
+			questions = questionService.getQuestionsByCategory(category);
 		}
-		return "redirect:/question/list";
-	}
 
-	@PostMapping("/question/delete/{id}")
-	public String deleteQuestion(@PathVariable("id") Long id) {
-		log.info("@# log : Delete");
-		
-		questionRepository.deleteById(id);
-		return "redirect:/question/list";
+		model.addAttribute("questions", questions);
+		return "list";
 	}
-	*/
 	
 	@GetMapping("/question/edit/{id}")
 	public String editForm(@PathVariable("id") Long id, Model model) {

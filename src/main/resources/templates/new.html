@@ -6,13 +6,21 @@
 </head>
 <body>
 	<h1>질문 추가</h1>
+
 	<form th:action="@{/question/new}" method="post">
 		<p>
-			<label>카테고리: <input type="text" name="category"/></label>
+			<label>카테고리:</label><br/>
+			<select name="category" required>
+				<option value="">카테고리 선택</option>
+				<option value="Java">Java</option>
+				<option value="DB">DB</option>
+				<option value="Spring">Spring</option>
+				<option value="Network">Network</option>
+			</select>
 		</p>
 		<p>
 			<label>질문 내용:</label><br/>
-			<textarea name="content" rows="4" cols="50"></textarea>
+			<textarea name="content" rows="4" cols="50" required></textarea>
 		</p>
 		<p>
 			<label>모범 답안:</label><br/>

@@ -10,7 +10,13 @@
 	<form th:action="@{'/question/edit/' + ${question.id}}" method="post">
 		<p>
 			<label>카테고리:</label><br/>
-			<input type="text" name="category" th:value="${question.category}" />
+			<!-- 🔥 카테고리를 select 박스로 수정 -->
+			<select name="category">
+				<option value="Java" th:selected="${question.category == 'Java'}">Java</option>
+				<option value="DB" th:selected="${question.category == 'DB'}">DB</option>
+				<option value="Spring" th:selected="${question.category == 'Spring'}">Spring</option>
+				<option value="Network" th:selected="${question.category == 'Network'}">Network</option>
+			</select>
 		</p>
 		<p>
 			<label>질문:</label><br/>

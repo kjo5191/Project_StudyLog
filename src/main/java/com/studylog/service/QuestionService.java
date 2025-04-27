@@ -70,6 +70,12 @@ public class QuestionService {
 		questionRepository.deleteById(id);
 	}
 
+	//카테고리 
+	public List<Question> getQuestionsByCategory(String category) {
+		log.info("@# Service : Get Questions By Category");
+
+		return questionRepository.findByCategory(category);	
+	}
 	
 }
 

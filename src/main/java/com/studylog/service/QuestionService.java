@@ -35,7 +35,7 @@ public class QuestionService {
 	
 	public void saveQuestion(Question question) {
 		log.info("@# Service : Save Question");
-		questionRepository.save(question);	
+		questionRepository.save(question);
 	}
 	
 	public List<Question> getQuestionList() {

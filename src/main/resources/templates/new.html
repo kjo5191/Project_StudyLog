@@ -8,16 +8,24 @@
 	<h1>질문 추가</h1>
 
 	<form th:action="@{/question/new}" method="post">
-		<p>
-			<label>카테고리:</label><br/>
-			<select name="category" required>
-				<option value="">카테고리 선택</option>
-				<option value="Java">Java</option>
-				<option value="DB">DB</option>
-				<option value="Spring">Spring</option>
-				<option value="Network">Network</option>
-			</select>
-		</p>
+		
+<!--		<p>-->
+<!--			<label>카테고리:</label><br/>-->
+<!--			<select name="category" required>-->
+<!--				<option value="">카테고리 선택</option>-->
+<!--				<option value="Java">Java</option>-->
+<!--				<option value="DB">DB</option>-->
+<!--				<option value="Spring">Spring</option>-->
+<!--				<option value="Network">Network</option>-->
+<!--			</select>-->
+<!--		</p>-->
+		
+		<p>카테고리:</p>
+		<input type="checkbox" name="categoryNames" value="Java"> Java<br/>
+		<input type="checkbox" name="categoryNames" value="DB"> DB<br/>
+		<input type="checkbox" name="categoryNames" value="Spring"> Spring<br/>
+		<input type="checkbox" name="categoryNames" value="Network"> Network<br/>
+		
 		<p>
 			<label>질문 내용:</label><br/>
 			<textarea name="content" rows="4" cols="50" required></textarea>

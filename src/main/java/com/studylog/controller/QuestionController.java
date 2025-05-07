@@ -18,13 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 @Slf4j
 public class QuestionController {
-	
-	@Autowired
-    private QuestionService questionService;
 
 //	Repository(DB)관련 모두 Service 로 분리
 //	@Autowired
 //	private QuestionRepository questionRepository;
+	@Autowired
+	private QuestionService questionService;
 
     QuestionController(QuestionService questionService) {
         this.questionService = questionService;
@@ -45,6 +44,7 @@ public class QuestionController {
 		return "random";  // → templates/random.html
 	}
 	
+//	new.html 호출
 	@GetMapping("/question/new")
 	public String newQuestionForm() {
 		log.info("@# log : New Question");

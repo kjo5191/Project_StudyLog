@@ -46,4 +46,7 @@ public class Question {
 
 	@Column(columnDefinition = "TEXT")
 	private String modelAnswer;
+	
+	@Column(columnDefinition = "TEXT")
+	private String myAnswer;
 }

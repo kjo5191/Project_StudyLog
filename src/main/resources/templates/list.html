@@ -19,7 +19,7 @@
 						<th>ID</th>
 						<th>카테고리</th>
 						<th>질문</th>
-						<th>모범답안</th>
+<!--						<th>모범답안</th>-->
 						<th>관리</th>
 					</tr>
 				</thead>
@@ -31,7 +31,7 @@
 						</td> -->
 						<td th:text="${q.category}">카테고리</td>
 						<td th:text="${q.content}">질문 내용</td>
-						<td th:text="${q.modelAnswer}">모범답안</td>
+<!--						<td th:text="${q.modelAnswer}">모범답안</td>-->
 						<td>
 							<a th:href="@{'/question/edit/' + ${q.id}}" class="btn btn-sm btn-primary me-1">수정</a>
 							<form th:action="@{'/question/delete/' + ${q.id}}" method="post" style="display:inline;">

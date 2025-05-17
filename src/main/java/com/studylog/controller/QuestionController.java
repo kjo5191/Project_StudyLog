@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,18 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
+    
+    @GetMapping("/question/{id}")
+    public String getQuestionDetail(@PathVariable("id") Integer id, Model model) {
+    	log.info("@# Controller : Get Question Detail");
+
+    	Question question = questionService.getQuestionById(id);  // Optional로 처리
+    	model.addAttribute("question", question);
+    	
+    	return "question";  // → templates/question.html
+    }
+
+    
 	@GetMapping("/question/random")
 	public String getRandomQuestion(Model model) {
 		log.info("@# controller : Random Question");
@@ -73,12 +86,12 @@ public class QuestionController {
 	}
 */
 	@GetMapping("/question/list")
-	public String getQuestionList(@RequestParam(value = "category", required = false) String category, Model model) {
+	public String getQuestionList(@RequestParam(value = "category", required = false) List<String> category, Model model) {
 		log.info("@# Controller : Get List");
 
 		List<Question> questions;
 
-		if (category == null || category.isBlank()) {
+		if (category == null || category.isEmpty()) {
 			questions = questionService.getQuestionList();
 		} else {
 			questions = questionService.getQuestionsByCategory(category);
@@ -89,7 +102,7 @@ public class QuestionController {
 	}
 	
 	@GetMapping("/question/edit/{id}")
-	public String editForm(@PathVariable("id") Long id, Model model) {
+	public String editForm(@PathVariable("id") Integer id, Model model) {
 		log.info("@# Controller : Edit Form");
 
 		Question question = questionService.getQuestionById(id);
@@ -98,7 +111,7 @@ public class QuestionController {
 	}
 
 	@PostMapping("/question/edit/{id}")
-	public String editSave(@PathVariable("id") Long id, Question updatedQuestion) {
+	public String editSave(@PathVariable("id") Integer id, @ModelAttribute Question updatedQuestion) {
 		log.info("@# Controller : Edit Save");
 
 		questionService.updateQuestion(id, updatedQuestion);
@@ -106,7 +119,7 @@ public class QuestionController {
 	}
 
 	@PostMapping("/question/delete/{id}")
-	public String deleteQuestion(@PathVariable("id") Long id) {
+	public String deleteQuestion(@PathVariable("id") Integer id) {
 		log.info("@# Controller : Delete");
 
 		questionService.deleteQuestion(id);

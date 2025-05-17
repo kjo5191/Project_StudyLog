@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="UTF-8">
+	<title>질문 상세</title>
+</head>
+<body>
+	<h1>질문 상세</h1>
+	<p><strong>카테고리:</strong> <span th:text="${question.category}">카테고리</span></p>
+	<p><strong>질문:</strong></p>
+	<p th:text="${question.content}">질문 내용</p>
+	<p><strong>모범답안:</strong></p>
+	<p th:text="${question.modelAnswer}">모범답안</p>
+	<p><strong>내 답변:</strong></p>
+	<p th:text="${question.myAnswer}">내 답변</p>
+
+	<a href="/question/list">목록으로 돌아가기</a>
+</body>
+</html>

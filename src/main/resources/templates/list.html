@@ -26,11 +26,12 @@
 				<tbody>
 					<tr th:each="q : ${questions}">
 						<td th:text="${q.id}">1</td>
-						<!-- <td>
-							<span th:each="c : ${q.categories}" th:text="${c.name}" class="badge bg-secondary me-1">카테고리</span>
-						</td> -->
 						<td th:text="${q.category}">카테고리</td>
-						<td th:text="${q.content}">질문 내용</td>
+<!--						<td th:text="${q.content}">질문 내용</td>-->
+						<td>
+							<a th:href="@{'/question/' + ${q.id}}" th:text="${q.content}">질문 내용</a>
+						</td>
+
 <!--						<td th:text="${q.modelAnswer}">모범답안</td>-->
 						<td>
 							<a th:href="@{'/question/edit/' + ${q.id}}" class="btn btn-sm btn-primary me-1">수정</a>

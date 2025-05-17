@@ -1,6 +1,7 @@
 package com.studylog.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,15 @@ public class QuestionService {
 	
 	@Autowired
 	private QuestionRepository questionRepository;
+	
+	public Question getQuestionById(Integer id) {
+		log.info("@# Service : Get Question By Id");
+		
+//		Question question = questionRepository.findById(id); // JPA에서는 이런식으로 타입을 받지 않음.
+		Optional<Question> optional = questionRepository.findById(id);	// 바로 return 할 수 있지만 가시성을 위해 Optional 풀어씀.
+		
+		return optional.orElse(null);	// JPA는 값이 없는 경우를 위해 orElse(null) 을 해주거나 if문 처리를 해줘야함.
+	}
 
 	public Question getRandomQuestion() {
 		log.info("@# Service : Random Question");
@@ -33,6 +43,7 @@ public class QuestionService {
 	
 	public void saveQuestion(Question question) {
 		log.info("@# Service : Save Question");
+		
 		questionRepository.save(question);
 	}
 	
@@ -44,13 +55,8 @@ public class QuestionService {
 		return questions;
 	}	
 	
-	public Question getQuestionById(Long id) {
-		log.info("@# Service : Get Question By Id");
 
-		return questionRepository.findById(id).orElse(null);
-	}
-
-	public void updateQuestion(Long id, Question updatedQuestion) {
+	public void updateQuestion(Integer id, Question updatedQuestion) {
 		log.info("@# Service : Update Question");
 
 		Question original = questionRepository.findById(id).orElse(null);
@@ -62,17 +68,17 @@ public class QuestionService {
 		}
 	}
 
-	public void deleteQuestion(Long id) {
+	public void deleteQuestion(Integer id) {
 		log.info("@# Service : Delete Question");
 
 		questionRepository.deleteById(id);
 	}
 
 	//카테고리 
-	public List<Question> getQuestionsByCategory(String category) {
+	public List<Question> getQuestionsByCategory(List<String> category) {
 		log.info("@# Service : Get Questions By Category");
 
-		return questionRepository.findByCategory(category);	
+		return questionRepository.findByCategoryIn(category);	
 	}
 	
 }

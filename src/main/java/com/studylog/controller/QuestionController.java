@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.studylog.domain.Question;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
+@RequestMapping("/question")
 public class QuestionController {
 
 //	Repository(DB)관련 모두 Service 로 분리
@@ -31,7 +33,7 @@ public class QuestionController {
     }
 
     
-    @GetMapping("/question/{id}")
+    @GetMapping("/{id}")
     public String getQuestionDetail(@PathVariable("id") Integer id, Model model) {
     	log.info("@# Controller : Get Question Detail");
 
@@ -42,7 +44,7 @@ public class QuestionController {
     }
 
     
-	@GetMapping("/question/random")
+	@GetMapping("/random")
 	public String getRandomQuestion(Model model) {
 		log.info("@# controller : Random Question");
 		
@@ -60,14 +62,14 @@ public class QuestionController {
 	}
 	
 //	new.html 호출
-	@GetMapping("/question/new")
+	@GetMapping("/new")
 	public String newQuestionForm() {
 		log.info("@# log : New Question");
 		
 		return "new";  // → templates/new.html
 	}
 
-	@PostMapping("/question/new")
+	@PostMapping("/new")
 	public String saveQuestion(Question question) {
 		log.info("@# Controller : Save Question");
 		
@@ -87,7 +89,7 @@ public class QuestionController {
 		return "list";
 	}
 */
-	@GetMapping("/question/list")
+	@GetMapping("/list")
 	public String getQuestionList(@RequestParam(value = "category", required = false) List<String> category, Model model) {
 		log.info("@# Controller : Get List");
 
@@ -103,7 +105,7 @@ public class QuestionController {
 		return "list";
 	}
 	
-	@GetMapping("/question/edit/{id}")
+	@GetMapping("/edit/{id}")
 	public String editForm(@PathVariable("id") Integer id, Model model) {
 		log.info("@# Controller : Edit Form");
 
@@ -112,7 +114,7 @@ public class QuestionController {
 		return "edit";
 	}
 
-	@PostMapping("/question/edit/{id}")
+	@PostMapping("/edit/{id}")
 	public String editSave(@PathVariable("id") Integer id, @ModelAttribute Question updatedQuestion) {
 		log.info("@# Controller : Edit Save");
 
@@ -120,7 +122,7 @@ public class QuestionController {
 		return "redirect:/question/list";
 	}
 
-	@PostMapping("/question/delete/{id}")
+	@PostMapping("/delete/{id}")
 	public String deleteQuestion(@PathVariable("id") Integer id) {
 		log.info("@# Controller : Delete");
 

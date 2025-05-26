@@ -1,27 +1,78 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-	<meta charset="UTF-8">
-	<title>랜덤 질문</title>
-</head>
-<body>
-	<h1>랜덤 질문</h1>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		<title>랜덤 질문 - StudyLog</title>
+		<!-- Favicon -->
+		<link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+		<!-- Core theme CSS (includes Bootstrap) -->
+		<link href="/css/styles.css" rel="stylesheet" />
+	</head>
+	<body>
+		<!-- Responsive navbar -->
+		<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+			<div class="container">
+				<a class="navbar-brand" href="/">Study Log</a>
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+					aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+						<li class="nav-item"><a class="nav-link" th:href="@{/main}">Home</a></li>
+						<li class="nav-item"><a class="nav-link active" aria-current="page" th:href="@{/question/random}">Question</a></li>
+						<li class="nav-item"><a class="nav-link" th:href="@{/question/list}">All Questions</a></li>
+					</ul>
+				</div>
+			</div>
+		</nav>
 
-	<div th:if="${question instanceof T(com.studylog.domain.Question)}">
-		<p><strong>카테고리:</strong> <span th:text="${question.category}"></span></p>
-		<p><strong>질문 내용:</strong> <span th:text="${question.content}"></span></p>
-		<p><strong>모범답안:</strong></p>
-		<pre th:text="${question.modelAnswer}"></pre>
-	</div>
+		<!-- Page content -->
+		<div class="container mt-5">
+			<h2 class="mb-4 text-center">랜덤 질문</h2>
 
-	<div th:unless="${question instanceof T(com.studylog.domain.Question)}">
-		<p th:text="${question}"></p>
-	</div>
-	
-	<br/>
-	<a th:href="@{/question/list}">전체 질문 목록 보기</a>
-	<br/>
-	<a th:href="@{/question/new}">질문 추가하기</a>
+			<!-- 정상적인 질문이 있을 경우 -->
+			<div th:if="${question != null and question.content != null}">
+				<div class="card shadow-sm">
+					<div class="card-body">
+						<h6 class="card-subtitle mb-2 text-muted">
+							카테고리:
+							<span th:text="${question.category}" class="badge bg-primary"></span>
+						</h6>
+						<h5 class="card-title mt-3">질문</h5>
+						<p class="card-text" th:utext="${question.content}"></p>
 
-</body>
+						<!-- 모범답안 토글 버튼 -->
+						<button class="btn btn-outline-info mt-4" type="button" data-bs-toggle="collapse" data-bs-target="#answerCollapse"
+							aria-expanded="false" aria-controls="answerCollapse">
+							모범답안 보기
+						</button>
+							<div class="collapse mt-3" id="answerCollapse">
+								<h5 class="card-title mt-4">모범답안</h5>
+								<pre class="bg-light p-3 rounded" th:utext="${question.modelAnswer}"></pre>
+							</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 예외적 메시지 출력 -->
+			<div th:if="${question == null or question.content == null}">
+				<div class="alert alert-warning mt-4" th:text="${question}">
+					질문이 없습니다.
+				</div>
+			</div>
+
+			<!-- 버튼 -->
+			<div class="text-center mt-4">
+				<a class="btn btn-outline-secondary me-2" th:href="@{/question/list}">전체 질문 목록</a>
+				<a class="btn btn-primary" th:href="@{/question/new}">질문 추가하기</a>
+			</div>
+		</div>
+
+		<!-- Bootstrap core JS -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+		<!-- Core theme JS -->
+		<script src="/js/scripts.js"></script>
+	</body>
 </html>

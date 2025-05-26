@@ -13,14 +13,15 @@
 			<!-- 🔥 카테고리를 select 박스로 수정 -->
 			<input type="checkbox" name="category" value="Java" th:checked="${#lists.contains(question.category, 'Java')}">Java<br/>
 			<input type="checkbox" name="category" value="DB" th:checked="${#lists.contains(question.category, 'DB')}">DB<br/>
-			<input type="checkbox" name="category" value="Spring" th:checked="${#lists.contains(question.category, 'HTTP')}">HTTP<br/>
-			<input type="checkbox" name="category" value="백엔드 개념">백엔드 개념<br/>
-			<input type="checkbox" name="category" value="객체지향 설계">객체지향 설계<br/>
-			<input type="checkbox" name="category" value="보안">보안<br/>
-			<input type="checkbox" name="category" value="컴퓨터 기초">컴퓨터 기초<br/>
-			<input type="checkbox" name="category" value="JavaScript">JavaScript<br/>
-			<input type="checkbox" name="category" value="Spring MVC">Spring MVC<br/>
-			<input type="checkbox" name="category" value="운영체제">운영체제<br/>
+			<input type="checkbox" name="category" value="HTTP" th:checked="${#lists.contains(question.category, 'HTTP')}">HTTP<br/>
+			<input type="checkbox" name="category" value="Spring" th:checked="${#lists.contains(question.category, 'Spring')}">Spring<br/>
+			<input type="checkbox" name="category" value="백엔드 개념" th:checked="${#lists.contains(question.category, '백엔드 개념')}">백엔드 개념<br/>
+			<input type="checkbox" name="category" value="객체지향 설계" th:checked="${#lists.contains(question.category, '객체지향 설계')}">객체지향 설계<br/>
+			<input type="checkbox" name="category" value="보안" th:checked="${#lists.contains(question.category, '보안')}">보안<br/>
+			<input type="checkbox" name="category" value="컴퓨터 기초" th:checked="${#lists.contains(question.category, '컴퓨터 기초')}">컴퓨터 기초<br/>
+			<input type="checkbox" name="category" value="JavaScript" th:checked="${#lists.contains(question.category, 'JavaScript')}">JavaScript<br/>
+			<input type="checkbox" name="category" value="Spring MVC" th:checked="${#lists.contains(question.category, 'Spring MVC')}">Spring MVC<br/>
+			<input type="checkbox" name="category" value="운영체제" th:checked="${#lists.contains(question.category, '운영체제')}">운영체제<br/>
 		</p>
 		<p>
 			<label>질문:</label><br/>

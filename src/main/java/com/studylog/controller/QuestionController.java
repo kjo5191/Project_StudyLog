@@ -54,6 +54,8 @@ public class QuestionController {
 			model.addAttribute("question", randomQuestion);
 		}
 
+		log.info("question class = {}", randomQuestion.getClass().getName());
+
 		return "random";  // → templates/random.html
 	}
 	

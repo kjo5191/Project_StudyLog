@@ -9,28 +9,21 @@
 
 	<form th:action="@{/question/new}" method="post">
 		
-<!--		<p>-->
-<!--			<label>카테고리:</label><br/>-->
-<!--			<select name="category" required>-->
-<!--				<option value="">카테고리 선택</option>-->
-<!--				<option value="Java">Java</option>-->
-<!--				<option value="DB">DB</option>-->
-<!--				<option value="Spring">Spring</option>-->
-<!--				<option value="Network">Network</option>-->
-<!--			</select>-->
-<!--		</p>-->
-		
 		<p>카테고리:</p>
-		<input type="checkbox" name="categoryNames" value="Java">Java<br/>
-		<input type="checkbox" name="categoryNames" value="DB">DB<br/>
-		<input type="checkbox" name="categoryNames" value="Spring">HTTP<br/>
-		<input type="checkbox" name="categoryNames" value="백엔드 개념">백엔드 개념<br/>
-		<input type="checkbox" name="categoryNames" value="객체지향 설계">객체지향 설계<br/>
-		<input type="checkbox" name="categoryNames" value="보안">보안<br/>
-		<input type="checkbox" name="categoryNames" value="컴퓨터 기초">컴퓨터 기초<br/>
-		<input type="checkbox" name="categoryNames" value="JavaScript">JavaScript<br/>
-		<input type="checkbox" name="categoryNames" value="Spring MVC">Spring MVC<br/>
-		<input type="checkbox" name="categoryNames" value="운영체제">운영체제<br/>
+		<p>
+			<label>카테고리:</label><br/>
+			<!-- 🔥 카테고리를 select 박스로 수정 -->
+			<input type="checkbox" name="category" value="Java">Java<br/>
+			<input type="checkbox" name="category" value="DB">DB<br/>
+			<input type="checkbox" name="category" value="Spring">HTTP<br/>
+			<input type="checkbox" name="category" value="백엔드 개념">백엔드 개념<br/>
+			<input type="checkbox" name="category" value="객체지향 설계">객체지향 설계<br/>
+			<input type="checkbox" name="category" value="보안">보안<br/>
+			<input type="checkbox" name="category" value="컴퓨터 기초">컴퓨터 기초<br/>
+			<input type="checkbox" name="category" value="JavaScript">JavaScript<br/>
+			<input type="checkbox" name="category" value="Spring MVC">Spring MVC<br/>
+			<input type="checkbox" name="category" value="운영체제">운영체제<br/>
+		</p>
 		
 		<p>
 			<label>질문 내용:</label><br/>

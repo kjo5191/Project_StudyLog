@@ -1,41 +1,70 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
-	<meta charset="UTF-8">
-	<title>질문 추가</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>질문 추가 - StudyLog</title>
+	<link rel="icon" type="image/x-icon" href="/assets/favicon.ico" />
+	<link href="/css/styles.css" rel="stylesheet" />
 </head>
 <body>
-	<h1>질문 추가</h1>
 
-	<form th:action="@{/question/new}" method="post">
-		
-		<p>카테고리:</p>
-		<p>
-			<label>카테고리:</label><br/>
-			<!-- 🔥 카테고리를 select 박스로 수정 -->
-			<input type="checkbox" name="category" value="Java">Java<br/>
-			<input type="checkbox" name="category" value="DB">DB<br/>
-			<input type="checkbox" name="category" value="Spring">HTTP<br/>
-			<input type="checkbox" name="category" value="백엔드 개념">백엔드 개념<br/>
-			<input type="checkbox" name="category" value="객체지향 설계">객체지향 설계<br/>
-			<input type="checkbox" name="category" value="보안">보안<br/>
-			<input type="checkbox" name="category" value="컴퓨터 기초">컴퓨터 기초<br/>
-			<input type="checkbox" name="category" value="JavaScript">JavaScript<br/>
-			<input type="checkbox" name="category" value="Spring MVC">Spring MVC<br/>
-			<input type="checkbox" name="category" value="운영체제">운영체제<br/>
-		</p>
-		
-		<p>
-			<label>질문 내용:</label><br/>
-			<textarea name="content" rows="4" cols="50" required></textarea>
-		</p>
-		<p>
-			<label>모범 답안:</label><br/>
-			<textarea name="modelAnswer" rows="6" cols="50"></textarea>
-		</p>
-		<p>
-			<button type="submit">저장</button>
-		</p>
-	</form>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+	<div class="container">
+		<a class="navbar-brand" href="/main">Study Log</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav ms-auto">
+				<li class="nav-item"><a class="nav-link" th:href="@{/main}">Home</a></li>
+				<li class="nav-item"><a class="nav-link" th:href="@{/question/random}">Question</a></li>
+				<li class="nav-item"><a class="nav-link active" th:href="@{/question/list}">List</a></li>
+			</ul>
+		</div>
+	</div>
+</nav>
+
+<div class="container mt-5" style="max-width: 800px;">
+	<div class="border bg-white rounded p-4 shadow-sm">
+		<h3 class="fw-semibold mb-4 text-center">질문 추가</h3>
+
+		<form th:action="@{/question/new}" method="post">
+
+			<!-- 카테고리 -->
+			<div class="mb-4">
+				<label class="form-label fw-bold">카테고리</label>
+				<div class="row">
+					<div class="col-6 col-md-4" th:each="cat : ${categories}">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" name="category" th:value="${cat}" th:id="'cat_' + ${cat}" />
+							<label class="form-check-label" th:for="'cat_' + ${cat}" th:text="${cat}"></label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 질문 내용 -->
+			<div class="mb-4">
+				<label for="content" class="form-label fw-bold">질문 내용</label>
+				<textarea class="form-control" id="content" name="content" rows="4" required></textarea>
+			</div>
+
+			<!-- 모범답안 -->
+			<div class="mb-4">
+				<label for="modelAnswer" class="form-label fw-bold">모범 답안</label>
+				<textarea class="form-control" id="modelAnswer" name="modelAnswer" rows="6"></textarea>
+			</div>
+
+			<div class="text-center">
+				<button type="submit" class="btn btn-dark me-2">저장</button>
+				<a th:href="@{/question/list}" class="btn btn-outline-dark">목록으로</a>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/scripts.js"></script>
 </body>
 </html>

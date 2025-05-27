@@ -37,4 +37,27 @@ public class ScheduleService {
 				.build();
 		scheduleRepository.save(schedule);
 	}
+	
+	public void update(Long id, ScheduleDTO dto) {
+		Schedule schedule = scheduleRepository.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 일정입니다. id=" + id));
+
+		schedule.setTitle(dto.getTitle());
+		schedule.setContent(dto.getContent());
+
+		if (dto.getStart() != null) {
+			schedule.setStart(dto.getStart());
+		}
+		if (dto.getEnd() != null) {
+			schedule.setEnd(dto.getEnd());
+		}
+
+		schedule.setDone(dto.isDone());
+		scheduleRepository.save(schedule);
+	}
+
+	public void delete(Long id) {
+		scheduleRepository.deleteById(id);
+	}
+	
 }

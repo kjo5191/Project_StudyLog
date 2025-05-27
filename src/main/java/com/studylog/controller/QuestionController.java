@@ -63,10 +63,11 @@ public class QuestionController {
 	
 //	new.html 호출
 	@GetMapping("/new")
-	public String newQuestionForm() {
-		log.info("@# log : New Question");
-		
-		return "new";  // → templates/new.html
+	public String showNewForm(Model model) {
+		model.addAttribute("categories", List.of(
+			"Java", "DB", "Spring", "HTTP", "백엔드 개념", "객체지향 설계", "보안", "컴퓨터 기초", "JavaScript", "Spring MVC", "운영체제"
+		));
+		return "new";
 	}
 
 	@PostMapping("/new")
@@ -105,12 +106,22 @@ public class QuestionController {
 		return "list";
 	}
 	
+//	@GetMapping("/edit/{id}")
+//	public String editForm(@PathVariable("id") Integer id, Model model) {
+//		log.info("@# Controller : Edit Form");
+//
+//		Question question = questionService.getQuestionById(id);
+//		model.addAttribute("question", question);
+//		return "edit";
+//	}
+	
 	@GetMapping("/edit/{id}")
 	public String editForm(@PathVariable("id") Integer id, Model model) {
-		log.info("@# Controller : Edit Form");
-
-		Question question = questionService.getQuestionById(id);
-		model.addAttribute("question", question);
+		Question q = questionService.getQuestionById(id);
+		model.addAttribute("question", q);
+		model.addAttribute("categories", List.of(
+			"Java", "DB", "Spring", "HTTP", "백엔드 개념", "객체지향 설계", "보안", "컴퓨터 기초", "JavaScript", "Spring MVC", "운영체제"
+		));
 		return "edit";
 	}
 
@@ -129,5 +140,5 @@ public class QuestionController {
 		questionService.deleteQuestion(id);
 		return "redirect:/question/list";
 	}
-
+	
 }

@@ -41,6 +41,28 @@
 			<div class="alert alert-secondary text-center" th:text="${question}">질문이 없습니다.</div>
 		</div>
 
+		<!-- 내 답변 입력 영역 -->
+		<div th:if="${question != null and question.content != null}" class="mt-4">
+			<div class="border rounded p-4 bg-white shadow-sm">
+				<h6 class="fw-semibold mb-2">내 답변</h6>
+				
+				<!-- 답변 작성 폼 -->
+				<form th:action="@{/question/answer/save}" method="post">
+					<input type="hidden" name="questionId" th:value="${question.id}" />
+
+					<div class="mb-3">
+						<textarea class="form-control" name="myAnswer" rows="6" placeholder="이 질문에 대한 나의 답변을 작성해보세요."></textarea>
+					</div>
+
+					<div class="text-end">
+						<button type="submit" class="btn btn-dark">답변 저장</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		<div th:if="${message}" class="alert alert-success mt-4" th:text="${message}"></div>
+		<div th:if="${error}" class="alert alert-danger mt-4" th:text="${error}"></div>
+
 		<!-- 버튼 -->
 		<div class="text-center mt-4">
 			<a class="btn btn-dark" th:href="@{/question/list}">전체 질문 목록</a>

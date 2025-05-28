@@ -37,4 +37,11 @@ public class Question {
 	
 	@Column(columnDefinition = "TEXT")
 	private String myAnswer;
+
+	@Column(columnDefinition = "TEXT")
+	private String aiFeedback;
+
+	private Integer scoreLogic;
+	private Integer scoreContent;
+	private Integer scoreGrammar;
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.studylog.domain.Question;
 import com.studylog.service.QuestionService;
@@ -141,4 +142,23 @@ public class QuestionController {
 		return "redirect:/question/list";
 	}
 	
+	
+	@PostMapping("/answer/save")
+	public String saveMyAnswer(@RequestParam("questionId") Integer questionId,
+							   @RequestParam("myAnswer") String myAnswer,
+							   RedirectAttributes redirectAttributes) {
+		log.info("@# Controller : Save MyAnswer");
+
+		Question question = questionService.getQuestionById(questionId);
+		if (question != null) {
+			question.setMyAnswer(myAnswer);
+			questionService.saveQuestion(question);
+			redirectAttributes.addFlashAttribute("message", "내 답변이 저장되었습니다.");
+		} else {
+			redirectAttributes.addFlashAttribute("error", "질문을 찾을 수 없습니다.");
+		}
+
+		return "redirect:/question/random";
+	}
+
 }

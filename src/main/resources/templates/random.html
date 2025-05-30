@@ -46,25 +46,48 @@
 			<div class="border rounded p-4 bg-white shadow-sm">
 				<h6 class="fw-semibold mb-2">내 답변</h6>
 				
-				<!-- 답변 작성 폼 -->
-				<form th:action="@{/question/answer/save}" method="post">
+				<!-- 내 답변 저장 form -->
+				<form method="post" th:action="@{/question/answer/save}">
 					<input type="hidden" name="questionId" th:value="${question.id}" />
+					<textarea name="myAnswer" class="form-control" rows="5"
+						th:text="${question.myAnswer} ?: ''"
+						placeholder="이 질문에 대한 나의 답변을 작성해보세요."></textarea>
 
-					<div class="mb-3">
-						<textarea class="form-control" name="myAnswer" rows="6" placeholder="이 질문에 대한 나의 답변을 작성해보세요."></textarea>
-					</div>
-
-					<div class="text-end">
+					<div class="mt-3">
 						<button type="submit" class="btn btn-dark">답변 저장</button>
 					</div>
 				</form>
+
+				<!-- AI 피드백 요청 form -->
+				<form method="post" th:action="@{/question/answer/feedback}" class="mt-2">
+					<input type="hidden" name="questionId" th:value="${question.id}" />
+					<button type="submit" class="btn btn-outline-dark">AI 피드백 요청</button>
+				</form>
+				
+				<!-- 저장 후 메시지 표시 -->
+				<div th:if="${message}" class="alert alert-success mt-3" th:text="${message}"></div>
+				<div th:if="${error}" class="alert alert-danger mt-3" th:text="${error}"></div>
+				
+				<!-- AI 피드백 표시
+				<div th:if="${question.aiFeedback}" class="mt-3">
+					<h5>AI 피드백</h5>
+					<p th:text="${question.aiFeedback}"></p>
+				</div> -->
+				
 			</div>
 		</div>
-		<div th:if="${message}" class="alert alert-success mt-4" th:text="${message}"></div>
-		<div th:if="${error}" class="alert alert-danger mt-4" th:text="${error}"></div>
-
+		
+		<!-- AI 피드백 출력 -->
+		<div th:if="${question.aiFeedback != null}" class="mt-4">
+			<div class="border p-3 bg-light rounded">
+				<h6 class="fw-semibold">AI 피드백</h6>
+				<pre th:text="${question.aiFeedback}"></pre>
+			</div>
+		</div>
+		
 		<!-- 버튼 -->
 		<div class="text-center mt-4">
+			<a href="/question/random" class="btn btn-secondary">새로운 질문</a>
 			<a class="btn btn-dark" th:href="@{/question/list}">전체 질문 목록</a>
 <!--			<a class="btn btn-outline-dark me-2" th:href="@{/question/new}">질문 추가하기</a>-->
 		</div>

@@ -146,19 +146,39 @@ public class QuestionController {
 	@PostMapping("/answer/save")
 	public String saveMyAnswer(@RequestParam("questionId") Integer questionId,
 							   @RequestParam("myAnswer") String myAnswer,
-							   RedirectAttributes redirectAttributes) {
+							   Model model) {
 		log.info("@# Controller : Save MyAnswer");
 
 		Question question = questionService.getQuestionById(questionId);
 		if (question != null) {
 			question.setMyAnswer(myAnswer);
-			questionService.saveQuestion(question);
-			redirectAttributes.addFlashAttribute("message", "내 답변이 저장되었습니다.");
+			questionService.saveQuestion(question);  // 피드백 없이 저장
+			model.addAttribute("message", "내 답변이 저장되었습니다.");
 		} else {
-			redirectAttributes.addFlashAttribute("error", "질문을 찾을 수 없습니다.");
+			model.addAttribute("error", "질문을 찾을 수 없습니다.");
+		}
+		
+		model.addAttribute("question", question);
+
+		return "random";  // 현재 질문 그대로 다시 랜더링
+	}
+	
+	@PostMapping("/answer/feedback")
+	public String requestAiFeedback(@RequestParam("questionId") Integer questionId, Model model) {
+		log.info("@# Controller : Request AI Feedback");
+
+		Question question = questionService.getQuestionById(questionId);
+		if (question != null && question.getMyAnswer() != null && !question.getMyAnswer().isBlank()) {
+			questionService.saveWithFeedback(question);  // 기존 답변 기준으로 피드백 요청
+			model.addAttribute("message", "AI 피드백이 저장되었습니다.");
+		} else {
+			model.addAttribute("error", "먼저 답변을 작성하고 저장해야 AI 피드백을 요청할 수 있습니다.");
 		}
 
-		return "redirect:/question/random";
+		model.addAttribute("question", question);
+		return "random";
 	}
+
+
 
 }

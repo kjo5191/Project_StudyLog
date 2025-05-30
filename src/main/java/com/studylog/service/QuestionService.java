@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.studylog.domain.Question;
 import com.studylog.repository.QuestionRepository;
+import com.studylog.util.GeminiClient;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,8 @@ public class QuestionService {
 	
 	@Autowired
 	private QuestionRepository questionRepository;
+	@Autowired
+	private GeminiClient geminiClient;
 	
 	public Question getQuestionById(Integer id) {
 		log.info("@# Service : Get Question By Id");
@@ -79,6 +82,12 @@ public class QuestionService {
 		log.info("@# Service : Get Questions By Category");
 
 		return questionRepository.findByCategoryIn(category);	
+	}
+	
+	public void saveWithFeedback(Question question) {
+		String aiFeedback = geminiClient.getFeedback(question.getContent(), question.getMyAnswer());
+		question.setAiFeedback(aiFeedback);
+		questionRepository.save(question);
 	}
 	
 }

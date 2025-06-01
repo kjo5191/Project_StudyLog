@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>일정 캘린더</title>
+	<link href="/css/styles.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+
+	<style>
+		/* 오늘 날짜 색상 */
+		.fc .fc-day-today {
+			background-color: #f1f3f5 !important; /* Bootstrap의 gray-100 느낌 */
+		}
+
+		/* 요일 헤더 텍스트 */
+		.fc .fc-col-header-cell-cushion {
+			color: #343a40;
+			font-weight: 500;
+		}
+
+		/* 버튼 색상 변경 */
+		.fc .fc-button-primary {
+			background-color: #343a40;
+			border-color: #343a40;
+		}
+		.fc .fc-button-primary:hover {
+			background-color: #212529;
+			border-color: #212529;
+		}
+
+		/* 툴바 텍스트 색상 */
+		.fc .fc-toolbar-title {
+			color: #212529;
+		}
+
+		/* 일정 항목 hover 효과 */
+		.fc-event:hover {
+			background-color: #212529 !important;
+			cursor: pointer;
+		}
+
+		/* 날짜 숫자 색상 변경 (기본적으로 a 태그로 되어 있음) */
+		.fc .fc-daygrid-day-number {
+			color: #212529 !important;
+			text-decoration: none;
+		}
+
+		/* 일정 텍스트 색상 (event title) */
+		.fc .fc-event-title {
+			color: #ffffff !important;
+			font-weight: 500;
+		}
+
+		/* 일정 배경 색상 */
+		.fc .fc-event {
+			background-color: #343a40 !important;
+			border: none !important;
+		}
+
+		/* hover 시 일정 강조 */
+		.fc-event:hover {
+			background-color: #212529 !important;
+			cursor: pointer;
+		}
+
+
+	</style>
+</head>
+
+<body>
+	<!-- 상단 바 -->
+	<div th:replace="fragments/navbar :: navbar"></div>
+
+	<!-- <div class="container mt-5" style="max-width: 1000px;"> -->
+	<div class="container mt-5">
+		<h3 class="mb-4 text-center fw-semibold">Calendar</h3>
+		<div id="calendar"></div>
+	</div>
+
+	<!-- <div class="container mt-4">
+		<h3 class="mb-4 text-center">📅 내 일정 보기</h3>
+		<div id="calendar"></div>
+	</div> -->
+
+	<!-- 일정 등록 모달 -->
+	<div class="modal fade" id="scheduleModal" tabindex="-1" aria-labelledby="scheduleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="text-dark" id="scheduleModalLabel">일정 등록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="scheduleForm">
+						<div class="mb-3">
+							<label for="title" class="form-label">제목</label>
+							<input type="text" class="form-control" id="title" required />
+						</div>
+						<div class="mb-3">
+							<label for="content" class="form-label">내용</label>
+							<textarea class="form-control" id="content" rows="3"></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="startDate" class="form-label">시작일시</label>
+							<input type="datetime-local" class="form-control" id="startDate" required />
+						</div>
+						<div class="mb-3">
+							<label for="endDate" class="form-label">종료일시 (선택)</label>
+							<input type="datetime-local" class="form-control" id="endDate" />
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+					<button type="button" class="btn btn-dark" onclick="submitSchedule()">등록</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 일정 상세 모달 -->
+	<div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<input type="hidden" id="detailId" />
+				<div class="modal-header">
+					<h5 class="text-dark" id="detailModalLabel">일정 상세</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p><strong>제목:</strong> <span id="detailTitle"></span></p>
+					<p><strong>내용:</strong> <span id="detailContent"></span></p>
+					<p><strong>시작일:</strong> <span id="detailStart"></span></p>
+					<p><strong>종료일:</strong> <span id="detailEnd"></span></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+					<button type="button" class="btn btn-dark" onclick="openEditModal()">수정</button>
+					<button type="button" class="btn btn-dark" onclick="deleteSchedule()">삭제</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 수정 모달 -->
+	<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<input type="hidden" id="editId" />
+				<div class="modal-header">
+					<h5 class="text-dark" id="editModalLabel">일정 수정</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="editTitle" class="form-label">제목</label>
+						<input type="text" class="form-control" id="editTitle" />
+					</div>
+					<div class="mb-3">
+						<label for="editContent" class="form-label">내용</label>
+						<textarea class="form-control" id="editContent" rows="3"></textarea>
+					</div>
+					<div class="mb-3">
+						<label for="editStart" class="form-label">시작일시</label>
+						<input type="datetime-local" class="form-control" id="editStart" />
+					</div>
+					<div class="mb-3">
+						<label for="editEnd" class="form-label">종료일시</label>
+						<input type="datetime-local" class="form-control" id="editEnd" />
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+					<button type="button" class="btn btn-outline-dark" onclick="submitEdit()">저장</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- 하단 바 -->
+	<div th:replace="fragments/footer :: footer"></div>	
+
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const calendarEl = document.getElementById('calendar');
+		const calendar = new FullCalendar.Calendar(calendarEl, {
+			initialView: 'dayGridMonth',
+			themeSystem: 'bootstrap5',
+			locale: 'ko',
+			events: '/api/schedule',
+			dateClick: function (info) {
+				document.getElementById('startDate').value = info.dateStr + 'T09:00';
+				document.getElementById('endDate').value = "";
+				document.getElementById('scheduleModalLabel').textContent = formatDateLabel(info.dateStr);
+				new bootstrap.Modal(document.getElementById('scheduleModal')).show();
+			},
+			// 일정 클릭 시 상세 모달 열기
+			eventClick: function(info) {
+				const event = info.event;
+
+				document.getElementById('detailId').value = event.id;
+				document.getElementById('detailTitle').textContent = event.title;
+				document.getElementById('detailContent').textContent = event.extendedProps.content || '-';
+
+				const start = event.start;
+				const end = event.end;
+
+				// 표시용 문자열 (예: 2025. 5. 27. 오전 09:00)
+				const formatDateTime = (date) => {
+					return date ? date.toLocaleString('ko-KR', {
+						year: 'numeric',
+						month: 'long',
+						day: 'numeric',
+						hour: '2-digit',
+						minute: '2-digit',
+						hour12: true
+					}) : '-';
+				};
+
+				// hidden dataset 용으로 ISO string 저장 (수정 시 사용)
+				document.getElementById('detailStart').textContent = formatDateTime(start);
+				document.getElementById('detailStart').dataset.value = start ? start.toISOString() : '';
+
+				document.getElementById('detailEnd').textContent = formatDateTime(end);
+				document.getElementById('detailEnd').dataset.value = end ? end.toISOString() : '';
+
+				const modal = new bootstrap.Modal(document.getElementById('detailModal'));
+				modal.show();
+			}
+		});
+		calendar.render();
+	});
+
+	function formatDateLabel(dateStr) {
+		const date = new Date(dateStr);
+		return `${date.getMonth() + 1}월 ${date.getDate()}일 일정 등록`;
+	}
+
+	function formatDateInput(isoString) {
+		if (!isoString || isoString === "-") return "";
+
+		const date = new Date(isoString);
+		const offset = date.getTimezoneOffset(); // 분 단위
+		const localDate = new Date(date.getTime() - offset * 60 * 1000);
+
+		return localDate.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
+	}
+
+	function submitSchedule() {
+		const title = document.getElementById('title').value;
+		const content = document.getElementById('content').value;
+		const start = document.getElementById('startDate').value;
+		const end = document.getElementById('endDate').value;
+		const data = { title, content, start, end: end || start, done: false };
+		fetch("/api/schedule", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(data)
+		}).then(res => {
+			if (res.ok) {
+				alert("일정이 등록되었습니다!");
+				location.reload();
+			} else alert("등록 실패!");
+		});
+	}
+
+	// 수정 모달 열기
+	function openEditModal() {
+		document.getElementById('editId').value = document.getElementById('detailId').value;
+		document.getElementById('editTitle').value = document.getElementById('detailTitle').textContent;
+		document.getElementById('editContent').value = document.getElementById('detailContent').textContent;
+
+		const startIso = document.getElementById('detailStart').dataset.value;
+		const endIso = document.getElementById('detailEnd').dataset.value;
+
+		document.getElementById('editStart').value = formatDateInput(startIso);
+		document.getElementById('editEnd').value = formatDateInput(endIso);
+
+		const modal = new bootstrap.Modal(document.getElementById('editModal'));
+		modal.show();
+	}
+
+	function submitEdit() {
+		const id = document.getElementById('editId').value;
+		const title = document.getElementById('editTitle').value;
+		const content = document.getElementById('editContent').value;
+		const startInput = document.getElementById('editStart').value;
+		const endInput = document.getElementById('editEnd').value;
+		const start = startInput || document.getElementById('detailStart').textContent;
+		const end = endInput || document.getElementById('detailEnd').textContent;
+		const data = { id, title, content, start, end: end || start, done: false };
+		fetch("/api/schedule/" + id, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(data)
+		}).then(res => {
+			if (res.ok) {
+				alert("수정 완료!");
+				location.reload();
+			} else alert("수정 실패!");
+		});
+	}
+
+	function deleteSchedule() {
+		const id = document.getElementById('detailId').value;
+
+		if (!confirm("정말 삭제하시겠습니까?")) return;
+
+		fetch("/api/schedule/" + id, {
+			method: "DELETE"
+		}).then(res => {
+			if (res.ok) {
+				alert("삭제 완료!");
+				location.reload();
+			} else {
+				alert("삭제 실패!");
+			}
+		});
+	}
+
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		initialView: 'dayGridMonth',
+		themeSystem: 'bootstrap5',
+		locale: 'ko',
+		events: '/api/schedule',
+
+		// ✅ 색상 조정
+		eventColor: '#343a40',      // 일정 배경색 (부트스트랩 gray-800)
+		eventTextColor: '#ffffff',  // 일정 텍스트 (흰색)
+		dayMaxEventRows: true
+	});
+
+</script>
+</body>
+</html>

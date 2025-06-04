@@ -15,4 +15,5 @@ public class ScheduleDTO {
 	private LocalDateTime start;
 	private LocalDateTime end;
 	private boolean done;
+	private boolean allDay;
 }

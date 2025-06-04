@@ -80,6 +80,8 @@ public class JobApplicationController {
 		event.put("title", app.getCompany() + " - " + label);
 		event.put("start", date);
 		event.put("url", "/job/edit/" + app.getId());
+		event.put("type", "job");
+		event.put("jobId", app.getId());
 		return event;
 	}	
 	

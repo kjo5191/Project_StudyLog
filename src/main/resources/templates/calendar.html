@@ -84,6 +84,11 @@
 		font-weight: 500 !important;
 	}
 
+	/* 일정 간 간격 띄우기 */
+	.fc-daygrid-event {
+		margin-bottom: 4px; /* 숫자는 적당히 조절 가능 */
+	}
+
 	/* 일정 3종류 */
 	.fc-event.one-day-event {
 		background-color: #343a40 !important;
@@ -135,6 +140,10 @@
 						<div class="mb-3">
 							<label for="content" class="form-label">내용</label>
 							<textarea class="form-control" id="content" rows="3"></textarea>
+						</div>
+						<div class="form-check mb-3">
+							<input class="form-check-input" type="checkbox" id="allDayCheckbox" />
+							<label class="form-check-label" for="allDayCheckbox">하루 종일</label>
 						</div>
 						<div class="mb-3">
 							<label for="startDate" class="form-label">시작일시</label>
@@ -195,6 +204,10 @@
 					<div class="mb-3">
 						<label for="editContent" class="form-label">내용</label>
 						<textarea class="form-control" id="editContent" rows="3"></textarea>
+					</div>
+					<div class="form-check mb-3">
+						<input class="form-check-input" type="checkbox" id="editAllDayCheckbox" />
+						<label class="form-check-label" for="editAllDayCheckbox">하루 종일</label>
 					</div>
 					<div class="mb-3">
 						<label for="editStart" class="form-label">시작일시</label>
@@ -266,6 +279,7 @@
 				document.getElementById('detailId').value = event.id;
 				document.getElementById('detailTitle').textContent = event.title;
 				document.getElementById('detailContent').textContent = event.extendedProps.content || '-';
+				document.getElementById('detailStart').dataset.allDay = event.allDay;
 
 				const start = event.start;
 				const end = event.end;
@@ -323,9 +337,33 @@
 	function submitSchedule() {
 		const title = document.getElementById('title').value;
 		const content = document.getElementById('content').value;
-		const start = document.getElementById('startDate').value;
-		const end = document.getElementById('endDate').value;
-		const data = { title, content, start, end: end || start, done: false };
+		const allDay = document.getElementById('allDayCheckbox').checked;
+		const startRaw = document.getElementById('startDate').value;
+		const endRaw = document.getElementById('endDate').value;
+
+		let start = startRaw;
+		let end = endRaw || startRaw;
+
+		// if (allDay) {
+		// 	// datetime-local → date-only 로 전환
+		// 	start = startRaw.split('T')[0];
+		// 	end = endRaw ? endRaw.split('T')[0] : start;
+		// }
+		if (allDay) {
+			const dateOnly = startRaw.split('T')[0]; // "2025-06-12"
+			start = dateOnly + "T00:00:00";
+			end = dateOnly + "T23:59:59";
+		}
+
+		const data = {
+			title,
+			content,
+			start,
+			end,
+			allDay,
+			done: false
+		};
+
 		fetch("/api/schedule", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
@@ -347,6 +385,10 @@
 		const startIso = document.getElementById('detailStart').dataset.value;
 		const endIso = document.getElementById('detailEnd').dataset.value;
 
+		// 💡 allDay 여부도 저장되어야 하므로 해당 값 읽기
+		const isAllDay = document.getElementById('detailStart').dataset.allDay === 'true';
+		document.getElementById('editAllDayCheckbox').checked = isAllDay;		
+
 		document.getElementById('editStart').value = formatDateInput(startIso);
 		document.getElementById('editEnd').value = formatDateInput(endIso);
 
@@ -358,11 +400,30 @@
 		const id = document.getElementById('editId').value;
 		const title = document.getElementById('editTitle').value;
 		const content = document.getElementById('editContent').value;
+		const allDay = document.getElementById('editAllDayCheckbox').checked;
+
 		const startInput = document.getElementById('editStart').value;
 		const endInput = document.getElementById('editEnd').value;
-		const start = startInput || document.getElementById('detailStart').textContent;
-		const end = endInput || document.getElementById('detailEnd').textContent;
-		const data = { id, title, content, start, end: end || start, done: false };
+
+		let start = startInput;
+		let end = endInput || startInput;
+
+		if (allDay) {
+			const dateOnly = startInput.split('T')[0];
+			start = dateOnly + "T00:00:00";
+			end = dateOnly + "T23:59:59";
+		}
+
+		const data = {
+			id,
+			title,
+			content,
+			start,
+			end,
+			allDay,
+			done: false
+		};
+
 		fetch("/api/schedule/" + id, {
 			method: "PUT",
 			headers: { "Content-Type": "application/json" },
@@ -374,6 +435,7 @@
 			} else alert("수정 실패!");
 		});
 	}
+
 
 	function deleteSchedule() {
 		const id = document.getElementById('detailId').value;

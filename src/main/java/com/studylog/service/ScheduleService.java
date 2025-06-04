@@ -23,6 +23,7 @@ public class ScheduleService {
 				.start(schedule.getStart())
 				.end(schedule.getEnd())
 				.done(schedule.isDone())
+				.allDay(schedule.isAllDay())
 				.build()
 		).collect(Collectors.toList());
 	}
@@ -34,6 +35,7 @@ public class ScheduleService {
 				.start(dto.getStart())
 				.end(dto.getEnd())
 				.done(dto.isDone())
+				.allDay(dto.isAllDay())
 				.build();
 		scheduleRepository.save(schedule);
 	}
@@ -51,7 +53,7 @@ public class ScheduleService {
 		if (dto.getEnd() != null) {
 			schedule.setEnd(dto.getEnd());
 		}
-
+		schedule.setAllDay(dto.isAllDay());
 		schedule.setDone(dto.isDone());
 		scheduleRepository.save(schedule);
 	}

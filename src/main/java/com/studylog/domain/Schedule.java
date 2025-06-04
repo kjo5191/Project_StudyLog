@@ -27,4 +27,6 @@ public class Schedule {
 	private LocalDateTime end;
 
 	private boolean done;
+	
+	private boolean allDay;
 }

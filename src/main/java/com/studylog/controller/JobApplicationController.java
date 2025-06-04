@@ -33,9 +33,9 @@ public class JobApplicationController {
 	}
 	
 	@GetMapping("/edit/{id}")
-	public String editForm(@PathVariable Integer id, Model model) {
+	public String editForm(@PathVariable("id") Integer id, Model model) {
 		JobApplication job = jobApplicationRepository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("해당 ID의 일정이 없습니다."));
+				.orElseThrow(() -> new IllegalArgumentException(id + " : 해당 ID의 일정이 없습니다."));
 		model.addAttribute("jobApplication", job);
 		return "job/edit";
 	}
@@ -44,5 +44,13 @@ public class JobApplicationController {
 	public String save(@ModelAttribute JobApplication jobApplication) {
 		jobApplicationRepository.save(jobApplication);
 		return "redirect:/job/list";
-	}	
+	}
+	
+	@PostMapping("/delete/{id}")
+//	GET 요청으로 삭제하면 주소창에서 직접 삭제가 가능하므로 POST 로 구현
+	public String delete(@PathVariable("id") Integer id) {
+		jobApplicationRepository.deleteById(id);
+		return "redirect:/job/list";
+	}
+	
 }

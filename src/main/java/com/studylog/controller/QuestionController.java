@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.studylog.domain.Question;
 import com.studylog.service.QuestionService;
@@ -41,7 +40,7 @@ public class QuestionController {
     	Question question = questionService.getQuestionById(id);  // Optional로 처리
     	model.addAttribute("question", question);
     	
-    	return "question";  // → templates/question.html
+    	return "question/detail";  // → templates/question/detail.html
     }
 
     
@@ -59,18 +58,19 @@ public class QuestionController {
 
 		log.info("question class = {}", randomQuestion.getClass().getName());
 
-		return "random";  // → templates/random.html
+		return "question/random";  // → templates/question/random.html
 	}
 	
-//	new.html 호출
+	
 	@GetMapping("/new")
 	public String showNewForm(Model model) {
 		model.addAttribute("categories", List.of(
 			"Java", "DB", "Spring", "HTTP", "백엔드 개념", "객체지향 설계", "보안", "컴퓨터 기초", "JavaScript", "Spring MVC", "운영체제"
 		));
-		return "new";
+		return "question/new";
 	}
 
+	
 	@PostMapping("/new")
 	public String saveQuestion(Question question) {
 		log.info("@# Controller : Save Question");
@@ -80,17 +80,7 @@ public class QuestionController {
 		return "redirect:/question/random";  // 저장 후 랜덤 질문 페이지로 리디렉션
 	}
 
-/*	
-	@GetMapping("/question/list")
-	public String getQuestionList(Model model) {
-		log.info("@# Controller : Get List");
-		
-		List<Question> questions = questionService.getQuestionList();
-		
-		model.addAttribute("questions", questions);
-		return "list";
-	}
-*/
+	
 	@GetMapping("/list")
 	public String getQuestionList(@RequestParam(value = "category", required = false) List<String> category, Model model) {
 		log.info("@# Controller : Get List");
@@ -104,17 +94,9 @@ public class QuestionController {
 		}
 
 		model.addAttribute("questions", questions);
-		return "list";
+		return "question/list";
 	}
-	
-//	@GetMapping("/edit/{id}")
-//	public String editForm(@PathVariable("id") Integer id, Model model) {
-//		log.info("@# Controller : Edit Form");
-//
-//		Question question = questionService.getQuestionById(id);
-//		model.addAttribute("question", question);
-//		return "edit";
-//	}
+
 	
 	@GetMapping("/edit/{id}")
 	public String editForm(@PathVariable("id") Integer id, Model model) {
@@ -123,9 +105,10 @@ public class QuestionController {
 		model.addAttribute("categories", List.of(
 			"Java", "DB", "Spring", "HTTP", "백엔드 개념", "객체지향 설계", "보안", "컴퓨터 기초", "JavaScript", "Spring MVC", "운영체제"
 		));
-		return "edit";
+		return "question/edit";
 	}
 
+	
 	@PostMapping("/edit/{id}")
 	public String editSave(@PathVariable("id") Integer id, @ModelAttribute Question updatedQuestion) {
 		log.info("@# Controller : Edit Save");
@@ -134,6 +117,7 @@ public class QuestionController {
 		return "redirect:/question/list";
 	}
 
+	
 	@PostMapping("/delete/{id}")
 	public String deleteQuestion(@PathVariable("id") Integer id) {
 		log.info("@# Controller : Delete");
@@ -160,8 +144,9 @@ public class QuestionController {
 		
 		model.addAttribute("question", question);
 
-		return "random";  // 현재 질문 그대로 다시 랜더링
+		return "question/random";  // 현재 질문 그대로 다시 랜더링
 	}
+	
 	
 	@PostMapping("/answer/feedback")
 	public String requestAiFeedback(@RequestParam("questionId") Integer questionId, Model model) {
@@ -176,9 +161,8 @@ public class QuestionController {
 		}
 
 		model.addAttribute("question", question);
-		return "random";
+		return "question/random";
 	}
-
 
 
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<meta charset="UTF-8">
+	<title>일정 등록/수정</title>
+	<link href="/css/styles.css" rel="stylesheet">
+</head>
+<body>
+	<h2>일정 등록/수정</h2>
+	<form action="/job/save" method="post">
+		<input type="hidden" name="id" th:value="${jobApplication.id}" />
+
+		<label>회사명</label>
+		<input type="text" name="company" th:value="${jobApplication.company}" required><br>
+
+		<label>직군</label>
+		<input type="text" name="industry" th:value="${jobApplication.industry}"><br>
+
+		<label>직무명</label>
+		<input type="text" name="position" th:value="${jobApplication.position}" required><br>
+
+		<label>상태</label>
+		<select name="status" th:value="${jobApplication.status}">
+			<option value="지원 전">지원 전</option>
+			<option value="서류 제출">서류 제출</option>
+			<option value="서류 합격">서류 합격</option>
+			<option value="1차 면접">1차 면접</option>
+			<option value="최종 합격">최종 합격</option>
+			<option value="불합격">불합격</option>
+		</select><br>
+
+		<label>지원일</label>
+		<input type="date" name="applyDate" th:value="${jobApplication.applyDate}"><br>
+
+		<label>마감일</label>
+		<input type="date" name="deadline" th:value="${jobApplication.deadline}"><br>
+
+		<label>1차 면접일</label>
+		<input type="date" name="interview1" th:value="${jobApplication.interview1}"><br>
+
+		<label>2차 면접일</label>
+		<input type="date" name="interview2" th:value="${jobApplication.interview2}"><br>
+
+		<label>3차 면접일</label>
+		<input type="date" name="interview3" th:value="${jobApplication.interview3}"><br>
+
+		<label>최종 면접일</label>
+		<input type="date" name="interview4" th:value="${jobApplication.interview4}"><br>
+
+		<label>비고</label>
+		<textarea name="notes" rows="4" cols="50" th:text="${jobApplication.notes}"></textarea><br>
+
+		<button type="submit">저장</button>
+	</form>
+</body>
+</html>

@@ -26,25 +26,25 @@
 						<th>마감일</th>
 						<th>지원 상태</th>
 						<th>비고</th>
-						<th>관리</th>
+						<!-- <th>관리</th> -->
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="j : ${applications}" th:attr="data-href=@{'/job/' + ${j.id}}" class="clickable-row">
+					<tr th:each="j : ${applications}" th:attr="data-href=@{'/job/edit/' + ${j.id}}" class="clickable-row">
 <!--						<td th:text="${j.id}">1</td>-->
 						<td th:text="${j.company}">회사명</td>
 						<td th:text="${j.industry}">직군</td>
 						<td th:text="${j.position}">직무명</td>
 						<td th:text="${j.applyDate}">2025-06-04</td>
 						<td th:text="${j.deadline}">2025-06-04</td>
-						<td th:text="${j.notes}">비고</td>
 						<td th:text="${j.status}">서류 제출</td>
-						<td>
+						<td th:text="${j.notes}">비고</td>
+						<!-- <td>
 							<a th:href="@{'/job/edit/' + ${j.id}}" class="btn btn-sm btn-outline-dark me-1">수정</a>
 							<form th:action="@{'/job/delete/' + ${j.id}}" method="post" style="display:inline;">
 								<button type="submit" class="btn btn-sm btn-outline-secondary" onclick="return confirm('정말 삭제할까요?')">삭제</button>
 							</form>
-						</td>
+						</td> -->
 					</tr>
 				</tbody>
 			</table>

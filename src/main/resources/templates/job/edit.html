@@ -11,7 +11,7 @@
 	<div th:replace="fragments/navbar :: navbar"></div>
 
 	<div class="container mt-5" style="max-width: 900px;">
-		<h3 class="mb-4 text-center fw-semibold">지원 일정 수정</h3>
+		<h3 class="mb-4 text-center fw-semibold">지원 일정 상세</h3>
 
 		<form th:action="@{/job/save}" th:object="${jobApplication}" method="post" class="border bg-white rounded p-4 shadow-sm">
 			<input type="hidden" th:field="*{id}" />
@@ -40,30 +40,42 @@
 			<div class="row">
 				<div class="col-md-6 mb-3">
 					<label class="form-label">지원일</label>
-					<input type="date" class="form-control" th:field="*{applyDate}">
+					<!-- <input type="date" class="form-control" th:field="*{applyDate}"> -->
+					<input type="date" class="form-control" name="applyDate"
+					 th:value="${jobApplication.applyDate != null} ? ${#temporals.format(jobApplication.applyDate, 'yyyy-MM-dd')} : ''">
 				</div>
 				<div class="col-md-6 mb-3">
 					<label class="form-label">마감일</label>
-					<input type="date" class="form-control" th:field="*{deadline}">
+					<!-- <input type="date" class="form-control" th:field="*{deadline}"> -->
+					<input type="date" class="form-control" name="deadline"
+					 th:value="${jobApplication.applyDate != null} ? ${#temporals.format(jobApplication.deadline, 'yyyy-MM-dd')} : ''">
 				</div>
 			</div>
 
 			<div class="row mb-3">
 				<div class="col-md-3">
-					<label class="form-label">1차 면접</label>
-					<input type="date" class="form-control" th:field="*{interview1}">
+					<label class="form-label">1차</label>
+					<!-- <input type="date" class="form-control" th:field="*{interview1}"> -->
+					<input type="date" class="form-control" name="interview1"
+					 th:value="${jobApplication.applyDate != null} ? ${#temporals.format(jobApplication.interview1, 'yyyy-MM-dd')} : ''">
 				</div>
 				<div class="col-md-3">
-					<label class="form-label">2차 면접</label>
-					<input type="date" class="form-control" th:field="*{interview2}">
+					<label class="form-label">2차</label>
+					<!-- <input type="date" class="form-control" th:field="*{interview2}"> -->
+					<input type="date" class="form-control" name="interview2"
+					 th:value="${jobApplication.applyDate != null} ? ${#temporals.format(jobApplication.interview2, 'yyyy-MM-dd')} : ''">					 
 				</div>
 				<div class="col-md-3">
-					<label class="form-label">3차 면접</label>
-					<input type="date" class="form-control" th:field="*{interview3}">
+					<label class="form-label">3차</label>
+					<!-- <input type="date" class="form-control" th:field="*{interview3}"> -->
+					<input type="date" class="form-control" name="interview3"
+					 th:value="${jobApplication.applyDate != null} ? ${#temporals.format(jobApplication.interview3, 'yyyy-MM-dd')} : ''">					 
 				</div>
 				<div class="col-md-3">
-					<label class="form-label">4차 면접</label>
-					<input type="date" class="form-control" th:field="*{interview4}">
+					<label class="form-label">4차</label>
+					<!-- <input type="date" class="form-control" th:field="*{interview4}"> -->
+					<input type="date" class="form-control" name="interview4"
+					 th:value="${jobApplication.applyDate != null} ? ${#temporals.format(jobApplication.interview4, 'yyyy-MM-dd')} : ''">					 
 				</div>
 			</div>
 
@@ -74,9 +86,17 @@
 
 			<div class="text-center">
 				<button type="submit" class="btn btn-dark me-2">저장</button>
-				<a th:href="@{/job/list}" class="btn btn-outline-secondary">목록</a>
+				<a th:href="@{/job/list}" class="btn btn-outline-secondary me-2">목록</a>
+				<button type="submit"
+						class="btn btn-outline-danger"
+						formaction="#" 
+						formmethod="post"
+						th:formaction="@{'/job/delete/' + ${jobApplication.id}}"
+						onclick="return confirm('정말 삭제할까요?')">
+					삭제
+				</button>
 			</div>
-		</form>
+
 	</div>
 
 	<div th:replace="fragments/footer :: footer"></div>

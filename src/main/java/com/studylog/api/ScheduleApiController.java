@@ -1,4 +1,4 @@
-package com.studylog.controller;
+package com.studylog.api;
 
 import com.studylog.dto.ScheduleDTO;
 import com.studylog.service.ScheduleService;

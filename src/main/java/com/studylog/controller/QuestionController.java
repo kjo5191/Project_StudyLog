@@ -15,23 +15,20 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.studylog.domain.Question;
 import com.studylog.service.QuestionService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-@Controller
 @Slf4j
+@Controller
+@RequiredArgsConstructor
 @RequestMapping("/question")
 public class QuestionController {
 
 //	Repository(DB)관련 모두 Service 로 분리
 //	@Autowired
 //	private QuestionRepository questionRepository;
-	@Autowired
-	private QuestionService questionService;
-
-    QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-
+	
+	private final QuestionService questionService;
     
     @GetMapping("/{id}")
     public String getQuestionDetail(@PathVariable("id") Integer id, Model model) {

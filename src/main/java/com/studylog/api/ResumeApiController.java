@@ -20,36 +20,19 @@ import org.springframework.web.multipart.MultipartFile;
 import com.studylog.util.GeminiClient;
 import com.studylog.util.MultipartInputStreamFileResource;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/resume")
 public class ResumeApiController {
 	
 	private final RestTemplate restTemplate = new RestTemplate();
 	private final String flaskUrl = "http://localhost:5000/upload";
 	private final GeminiClient geminiClient;
-
-	@Autowired
-	public ResumeApiController(GeminiClient geminiClient) {
-		this.geminiClient = geminiClient;
-	}
 	
-/*
-	@PostMapping("/api/resume")
-	public ResponseEntity<String> receiveResumeText(@RequestParam("text") String text) {
-		log.info("받은 텍스트: "+ text);
-		
-		// 1. 오타 교정
-		String correctedText = geminiClient.correctSpelling(text);
-		// 2. 이력서 피드백
-		String feedback = geminiClient.getResumeFeedback(correctedText);
-		log.info("📨 최종 피드백: {}", feedback);
-
-		return ResponseEntity.ok(feedback);
-	}
-*/
 	@PostMapping("/upload")
 	public ResponseEntity<String> uploadResume(@RequestParam("file") MultipartFile file) {
 		log.info("📤 자소서 이미지 수신 및 Flask 전송 시작");

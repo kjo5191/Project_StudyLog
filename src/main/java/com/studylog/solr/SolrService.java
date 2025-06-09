@@ -25,10 +25,10 @@ public class SolrService {
 	public List<QuestionSolrDocument> searchByKeyword(String keyword) {
 		try {
 			SolrQuery query = new SolrQuery();
-//			query.setQuery(keyword); // 모든 필드에서 keyword를 검색
-			query.setQuery(String.format("content:\"%s\" OR modelAnswer:\"%s\"", keyword, keyword));
+//			query.setQuery(String.format("questionText:\"%s\" OR modelAnswer:\"%s\"", keyword, keyword));
+			query.setQuery(keyword); // 모든 필드에서 keyword를 검색
 			query.set("defType", "edismax"); // 쿼리 구문 확장
-			query.set("qf", "content modelAnswer"); // 검색 대상 필드
+			query.set("qf", "questionCategory questionText modelAnswer"); // 검색 대상 필드
 
 			QueryResponse response = solrClient.query(query);
 			return response.getBeans(QuestionSolrDocument.class);
@@ -60,8 +60,8 @@ public class SolrService {
 	private QuestionSolrDocument convertToSolrDoc(Question entity) {
 		QuestionSolrDocument doc = new QuestionSolrDocument();
 		doc.setId(entity.getId().toString());
-		doc.setCategory(entity.getQuestionCategory());
-		doc.setContent(entity.getQuestionText());
+		doc.setQuestionCategory(entity.getQuestionCategory());
+		doc.setQuestionText(entity.getQuestionText());
 		doc.setModelAnswer(entity.getModelAnswer());
 		doc.setMyAnswer(entity.getMyAnswer());
 		
@@ -73,7 +73,7 @@ public class SolrService {
 		try {
 			QuestionSolrDocument doc = new QuestionSolrDocument();
 			doc.setId("java_test");
-			doc.setContent("Java is a powerful language used in Spring.");
+			doc.setQuestionText("Java is a powerful language used in Spring.");
 			doc.setModelAnswer("This is a Java-related answer.");
 			solrClient.addBean(doc);
 			solrClient.commit();

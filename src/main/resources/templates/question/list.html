@@ -78,6 +78,13 @@
 			const searchBtn = document.getElementById('solrSearchBtn');
 			const tableBody = document.getElementById('question-table-body');
 
+			// ⏎ Enter 키로도 검색 가능하게
+			keywordInput.addEventListener('keyup', function (e) {
+				if (e.key === 'Enter') {
+					searchBtn.click();
+				}
+			});
+
 			searchBtn.addEventListener('click', function () {
 				const keyword = keywordInput.value.trim();
 				if (!keyword) return;

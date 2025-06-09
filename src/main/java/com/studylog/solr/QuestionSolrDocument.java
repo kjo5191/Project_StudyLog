@@ -15,10 +15,10 @@ public class QuestionSolrDocument {
 	private String id;
 
 	@Field
-	private List<String> category;
+	private List<String> questionCategory;
 	
 	@Field
-	private String content;
+	private String questionText;
 
 	@Field
 	private String modelAnswer;

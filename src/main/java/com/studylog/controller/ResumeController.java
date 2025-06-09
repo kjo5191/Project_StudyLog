@@ -24,11 +24,22 @@ public class ResumeController {
 
 	@PostMapping("/image")
 	public String handleImageUpload(@RequestParam("file") MultipartFile file, Model model) {
-		// ... flask 전송 + Gemini 피드백 로직
-		String feedback = GeminiClient.getResumeFeedback(text); // 결과 문자열
+		try {
+			// 1. Flask 서버로 이미지 전송해서 OCR 결과 받아오기
+//			String text = flaskClient.sendImageAndGetText(file);
 
-		model.addAttribute("resultText", feedback);
+			// 2. Gemini를 통해 피드백 생성
+//			String feedback = geminiClient.getResumeFeedback(text);
+
+			// 3. 화면에 결과 전송
+//			model.addAttribute("resultText", feedback);
+		} catch (Exception e) {
+			log.error("오류 발생", e);
+			model.addAttribute("resultText", "오류가 발생했습니다: " + e.getMessage());
+		}
+
 		return "resume/upload";
 	}
+
 
 }

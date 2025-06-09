@@ -9,12 +9,19 @@
 <body>
 
 	<!-- 상단 바 -->
-	<div th:replace="fragments/navbar :: navbar"></div>
+	<div th:replace="fragments/navbar :: navbar"></div>	
 
 	<div class="container mt-5" style="max-width: 1000px;">
 		<h3 class="mb-4 text-center fw-semibold">질문 목록</h3>
 
 		<div class="border bg-white rounded p-4 shadow-sm">
+
+			<!-- 🔍 Solr 검색 입력창 -->
+			<div class="mb-4 d-flex justify-content-between align-items-center">
+				<input id="solrKeyword" type="text" class="form-control me-2" style="max-width: 300px;" placeholder="검색" />
+				<button id="solrSearchBtn" class="btn btn-outline-dark">검색</button>
+			</div>		
+
 			<table class="table table-bordered table-hover align-middle text-center table-sm">
 				<thead class="table-light">
 					<tr>
@@ -24,11 +31,11 @@
 						<th style="width: 20%;">관리</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="question-table-body">
 					<tr th:each="q : ${questions}" th:attr="data-href=@{'/question/' + ${q.id}}" class="clickable-row">
 						<td th:text="${q.id}">1</td>
-						<td th:text="${q.category}">카테고리</td>
-						<td class="text-start" th:text="${q.content}">질문 내용</td>
+						<td th:text="${q.questionCategory}">카테고리</td>
+						<td class="text-start" th:text="${q.questionText}">질문 내용</td>
 						<td>
 							<a th:href="@{'/question/edit/' + ${q.id}}" class="btn btn-sm btn-outline-dark me-1">수정</a>
 							<form th:action="@{'/question/delete/' + ${q.id}}" method="post" style="display:inline;">
@@ -38,6 +45,7 @@
 					</tr>
 				</tbody>
 			</table>
+
 			<div class="mt-4 text-center">
 				<a th:href="@{/question/new}" class="btn btn-dark me-2">질문 추가</a>
 				<a th:href="@{/question/random}" class="btn btn-outline-dark">랜덤 질문 보기</a>
@@ -60,6 +68,67 @@
 					const href = this.getAttribute('data-href');
 					if (href) window.location.href = href;
 				});
+			});
+		});
+	</script>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const keywordInput = document.getElementById('solrKeyword');
+			const searchBtn = document.getElementById('solrSearchBtn');
+			const tableBody = document.getElementById('question-table-body');
+
+			searchBtn.addEventListener('click', function () {
+				const keyword = keywordInput.value.trim();
+				if (!keyword) return;
+
+				fetch(`/api/solr/search?q=${encodeURIComponent(keyword)}`)
+					.then(res => res.json())
+					.then(data => {
+						console.log('응답:', data); 
+
+						tableBody.innerHTML = '';
+
+						if (data.length === 0) {
+							tableBody.innerHTML = '<tr><td colspan="4">검색 결과가 없습니다.</td></tr>';
+							return;
+						}
+
+						data.forEach(q => {
+							const categoryStr = q.questionCategory?.join(', ') || '없음';
+							const questionStr = Array.isArray(q.questionText) ? q.questionText.join(' ') : q.questionText;
+
+							const rowHtml = `
+								<tr class="clickable-row" data-href="/question/${q.id}">
+									<td>${q.id}</td>
+									<td>${categoryStr}</td>
+									<td class="text-start">${questionStr}</td>
+									<td>
+										<a href="/question/edit/${q.id}" class="btn btn-sm btn-outline-dark me-1">수정</a>
+										<form action="/question/delete/${q.id}" method="post" style="display:inline;">
+											<button type="submit" class="btn btn-sm btn-outline-secondary" onclick="return confirm('정말 삭제할까요?')">삭제</button>
+										</form>
+									</td>
+								</tr>
+							`;
+							tableBody.insertAdjacentHTML('beforeend', rowHtml);
+						});
+
+						// row 클릭 이벤트 다시 바인딩
+						document.querySelectorAll('.clickable-row').forEach(row => {
+							row.addEventListener('click', function (e) {
+								if (e.target.closest('a') || e.target.closest('button')) return;
+								const href = this.getAttribute('data-href');
+								if (href) window.location.href = href;
+							});
+						});
+						
+					})
+					
+					.catch(err => {
+						console.error('검색 실패:', err);
+						alert('검색 중 오류가 발생했습니다.');
+					});
 			});
 		});
 	</script>

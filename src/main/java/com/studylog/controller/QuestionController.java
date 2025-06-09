@@ -14,23 +14,24 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.studylog.domain.Question;
 import com.studylog.service.QuestionService;
+import com.studylog.solr.QuestionSolrDocument;
+import com.studylog.solr.SolrService;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Controller
 @Slf4j
 @RequestMapping("/question")
+@RequiredArgsConstructor
 public class QuestionController {
 
 //	Repository(DB)관련 모두 Service 로 분리
 //	@Autowired
 //	private QuestionRepository questionRepository;
-	@Autowired
-	private QuestionService questionService;
 
-    QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
+	private final QuestionService questionService;
+	private final SolrService solrService;
 
     
     @GetMapping("/{id}")
@@ -51,7 +52,8 @@ public class QuestionController {
 		Question randomQuestion = questionService.getRandomQuestion();
 
 		if (randomQuestion == null) {
-			model.addAttribute("question", "질문이 없습니다.");
+			model.addAttribute("question", null);
+			model.addAttribute("error", "질문이 없습니다.");
 		} else {
 			model.addAttribute("question", randomQuestion);
 		}
@@ -77,10 +79,10 @@ public class QuestionController {
 		
 //		questionRepository.save(question);		//Controller 가 직접 DB 관여
 		questionService.saveQuestion(question);	//Service 에 위임
-		return "redirect:/question/random";  // 저장 후 랜덤 질문 페이지로 리디렉션
+		return "redirect:/question/list";  // 저장 후 목록 페이지로 리디렉션
 	}
 
-	
+
 	@GetMapping("/list")
 	public String getQuestionList(@RequestParam(value = "category", required = false) List<String> category, Model model) {
 		log.info("@# Controller : Get List");
@@ -97,6 +99,33 @@ public class QuestionController {
 		return "question/list";
 	}
 
+
+/*
+	@GetMapping("/list")
+	public String listQuestions(@RequestParam(name = "keyword", required = false) String keyword, Model model) {
+		List<Question> questions;
+		
+		if (keyword != null && !keyword.isBlank()) {
+			// Solr에서 검색된 Document들을 Entity로 변환
+			List<QuestionSolrDocument> docs = solrService.searchByKeyword(keyword);
+			questions = docs.stream()
+				.map(doc -> new Question(
+					Integer.valueOf(doc.getId()),
+					doc.getCategory(),
+					doc.getContent(),
+					doc.getModelAnswer(),
+					doc.getMyAnswer(),
+					null, null, null, null // 점수 필드 비워도 됨
+				))
+				.toList();
+		} else {
+			// 전체 목록
+			questions = questionService.getQuestionList();
+		}
+		model.addAttribute("questions", questions);
+		return "question/list";
+	}
+*/
 	
 	@GetMapping("/edit/{id}")
 	public String editForm(@PathVariable("id") Integer id, Model model) {

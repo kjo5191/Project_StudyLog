@@ -42,6 +42,7 @@ public class ResumeController {
 
 			// 4. 화면에 결과 전송
 			model.addAttribute("resultText", feedback);
+
 		} catch (Exception e) {
 			log.error("오류 발생", e);
 			model.addAttribute("resultText", "오류가 발생했습니다: " + e.getMessage());

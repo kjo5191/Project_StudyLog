@@ -64,8 +64,8 @@ public class QuestionService {
 
 		Question original = questionRepository.findById(id).orElse(null);
 		if (original != null) {
-			original.setCategory(updatedQuestion.getCategory());
-			original.setContent(updatedQuestion.getContent());
+			original.setQuestionCategory(null);
+			original.setQuestionText(null);
 			original.setModelAnswer(updatedQuestion.getModelAnswer());
 			questionRepository.save(original);
 		}
@@ -81,11 +81,11 @@ public class QuestionService {
 	public List<Question> getQuestionsByCategory(List<String> category) {
 		log.info("@# Service : Get Questions By Category");
 
-		return questionRepository.findByCategoryIn(category);	
+		return questionRepository.findByQuestionCategoryIn(category);	
 	}
 	
 	public void saveWithFeedback(Question question) {
-		String aiFeedback = geminiClient.getFeedback(question.getContent(), question.getMyAnswer());
+		String aiFeedback = geminiClient.getFeedback(question.getQuestionText(), question.getMyAnswer());
 		question.setAiFeedback(aiFeedback);
 		questionRepository.save(question);
 	}

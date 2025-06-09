@@ -27,10 +27,10 @@ public class Question {
 	private Integer id;
 	
 	@ElementCollection
-	private List<String> category;
+	private List<String> questionCategory;
 	
 	@Column(columnDefinition = "TEXT")
-	private String content;
+	private String questionText;
 
 	@Column(columnDefinition = "TEXT")
 	private String modelAnswer;

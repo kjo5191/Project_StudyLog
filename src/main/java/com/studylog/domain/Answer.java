@@ -1,14 +1,19 @@
 package com.studylog.domain;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,29 +24,33 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class Question {
+@Builder
+public class Answer {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@ElementCollection
-	private List<String> questionCategory;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "question_id")
+	private Question question;
 	
 	@Column(columnDefinition = "TEXT")
-	private String questionText;
-
-	@Column(columnDefinition = "TEXT")
-	private String modelAnswer;
+	private String answerText;
 	
-	@Column(columnDefinition = "TEXT")
-	private String myAnswer;
-
-	@Column(columnDefinition = "TEXT")
+	private LocalDateTime answeredAt;
+	
 	private String aiFeedback;
-
+	
 	private Integer scoreLogic;
 	private Integer scoreContent;
 	private Integer scoreGrammar;
+	
+	@PrePersist
+	public void prePersist() {
+		if(answeredAt == null) {
+			answeredAt = LocalDateTime.now();
+		}
+	}
+	
 }

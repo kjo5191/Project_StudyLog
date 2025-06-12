@@ -26,13 +26,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class QuestionController {
 
-//	Repository(DB)관련 모두 Service 로 분리
-//	@Autowired
-//	private QuestionRepository questionRepository;
-	
 	private final QuestionService questionService;
 	private final SolrService solrService;
-
     
     @GetMapping("/{id}")
     public String getQuestionDetail(@PathVariable("id") Integer id, Model model) {
@@ -155,7 +150,7 @@ public class QuestionController {
 		return "redirect:/question/list";
 	}
 	
-	
+/*	
 	@PostMapping("/answer/save")
 	public String saveMyAnswer(@RequestParam("questionId") Integer questionId,
 							   @RequestParam("myAnswer") String myAnswer,
@@ -175,7 +170,7 @@ public class QuestionController {
 
 		return "question/random";  // 현재 질문 그대로 다시 랜더링
 	}
-	
+*/	
 	
 	@PostMapping("/answer/feedback")
 	public String requestAiFeedback(@RequestParam("questionId") Integer questionId, Model model) {

@@ -64,21 +64,23 @@ public class AnswerController {
 	public Map<String, String> requestAiFeedback(@RequestParam("questionId") Integer questionId) {
 		log.info("@# Controller : Request AI Feedback");
 
-		// 최신 답변 가져오기
-		Optional<Answer> latestAnswerOpt = answerService.getLatestAnswer(questionId);
+		Optional<Answer> optionalAnswer = answerService.getLatestAnswer(questionId);
 
-		if (latestAnswerOpt.isPresent()) {
-			Answer latestAnswer = latestAnswerOpt.get();
+		if (optionalAnswer.isPresent()) {
+			Answer answer = optionalAnswer.get();
+			String answerText = answer.getAnswerText();
 
-			if (latestAnswer.getAnswerText() != null && !latestAnswer.getAnswerText().isBlank()) {
-				// 피드백 저장 처리
-				questionService.saveWithFeedback(latestAnswer.getQuestion()); // 또는 questionId 활용
+			if (answerText != null && !answerText.isBlank()) {
+				answerService.saveWithFeedback(answer); // 이 안에서 Gemini 호출
 				return Collections.singletonMap("message", "AI 피드백이 저장되었습니다.");
+			} else {
+				return Collections.singletonMap("message", "답변 내용이 비어 있습니다.");
 			}
+		} else {
+			return Collections.singletonMap("message", "해당 질문에 대한 답변이 없습니다.");
 		}
-
-		return Collections.singletonMap("message", "먼저 답변을 작성하고 저장해야 AI 피드백을 요청할 수 있습니다.");
 	}
+
 
 	
 }

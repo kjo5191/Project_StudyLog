@@ -32,7 +32,7 @@
 					</tr>
 				</thead>
 				<tbody id="question-table-body">
-					<tr th:each="q : ${questions}" th:attr="data-href=@{'/question/' + ${q.id}}" class="clickable-row">
+					<tr th:each="q : ${questions}" th:attr="data-href=@{'/question/detail/' + ${q.id}}" class="clickable-row">
 						<td th:text="${q.id}">1</td>
 						<td th:text="${q.questionCategory}">카테고리</td>
 						<td class="text-start" th:text="${q.questionText}">질문 내용</td>

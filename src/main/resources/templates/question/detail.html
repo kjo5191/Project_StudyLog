@@ -37,9 +37,9 @@
 			</div>
 
 			<!-- 내 답변 -->
-			<div class="mb-4">
-				<h5 class="fw-bold">내 답변</h5>
-				<pre class="bg-light p-3 rounded" th:utext="${question.myAnswer}"></pre>
+			<div class="mb-4" th:if="${latestAnswer != null}">
+				<h5 class="fw-bold">내 최근 답변</h5>
+				<pre class="bg-light p-3 rounded" th:utext="${latestAnswer.answerText}"></pre>
 			</div>
 
 			<div class="text-center mt-4">

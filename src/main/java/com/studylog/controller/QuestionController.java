@@ -1,6 +1,7 @@
 package com.studylog.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,7 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.studylog.domain.Answer;
 import com.studylog.domain.Question;
+import com.studylog.service.AnswerService;
 import com.studylog.service.QuestionService;
 import com.studylog.solr.QuestionSolrDocument;
 import com.studylog.solr.SolrService;
@@ -27,35 +30,54 @@ import lombok.extern.slf4j.Slf4j;
 public class QuestionController {
 
 	private final QuestionService questionService;
+	private final AnswerService answerService;
 	private final SolrService solrService;
-    
-    @GetMapping("/{id}")
+
+	
+    @GetMapping("/detail/{id}")
     public String getQuestionDetail(@PathVariable("id") Integer id, Model model) {
     	log.info("@# Controller : Get Question Detail");
 
     	Question question = questionService.getQuestionById(id);  // Optional로 처리
     	model.addAttribute("question", question);
     	
+		Optional<Answer> latestAnswer = answerService.getLatestAnswer(question.getId());
+		latestAnswer.ifPresent(answer -> model.addAttribute("latestAnswer", answer)); 
+    	
     	return "question/detail";  // → templates/question/detail.html
     }
 
     
 	@GetMapping("/random")
-	public String getRandomQuestion(Model model) {
+	public String redirectRandomQuestion() {
 		log.info("@# controller : Random Question");
 		
 		Question randomQuestion = questionService.getRandomQuestion();
 
-		if (randomQuestion == null) {
-			model.addAttribute("question", null);
-			model.addAttribute("error", "질문이 없습니다.");
-		} else {
-			model.addAttribute("question", randomQuestion);
+		if (randomQuestion == null) {			
+			return "redirect:/question/list";
 		}
 
-		log.info("question class = {}", randomQuestion.getClass().getName());
+		return "redirect:/question/"+ randomQuestion.getId();
+	}
+	
 
-		return "question/random";  // → templates/question/random.html
+	@GetMapping("/{id}")
+	public String getRandomQuestion(@PathVariable("id") Integer id, Model model) {
+		log.info("@# controller : Random Question");
+
+		Question question = questionService.getQuestionById(id);
+		
+		if (question == null) {
+			model.addAttribute("error", "질문을 찾을 수 없습니다.");
+			return "question/random";
+		}
+		model.addAttribute("question", question);
+		
+		Optional<Answer> latestAnswer = answerService.getLatestAnswer(id);
+		latestAnswer.ifPresent(answer -> model.addAttribute("latestAnswer", answer));
+
+		return "question/random";		
 	}
 	
 	
@@ -170,7 +192,7 @@ public class QuestionController {
 
 		return "question/random";  // 현재 질문 그대로 다시 랜더링
 	}
-*/	
+
 	
 	@PostMapping("/answer/feedback")
 	public String requestAiFeedback(@RequestParam("questionId") Integer questionId, Model model) {
@@ -188,5 +210,6 @@ public class QuestionController {
 		return "question/random";
 	}
 
-
+*/
+	
 }

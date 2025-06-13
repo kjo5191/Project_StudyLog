@@ -1,9 +1,12 @@
 package com.studylog.controller;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,25 +32,23 @@ public class AnswerController {
 	private final QuestionService questionService;
 	
 	@PostMapping("/save")
-	public String saveAnswer(@RequestParam("questionId") Integer questionId,
-							 @RequestParam("answerText") String answerText,
-							 Model model) {
+	@ResponseBody
+	public ResponseEntity<String> saveAnswer(@RequestParam("questionId") Integer questionId,
+											 @RequestParam("answerText") String answerText) {
 		Question question = questionService.getQuestionById(questionId);
 		if (question == null) {
-			Answer answer = Answer.builder()
-					.question(question)
-					.answerText(answerText)
-					.build();
-			answerService.save(answer);
-			model.addAttribute("message", "답변이 저장되었습니다.");
-		} else {
-			model.addAttribute("error", "질문을 찾을 수 없습니다.");
+			return ResponseEntity.badRequest().body("질문을 찾을 수 없습니다.");
 		}
-		model.addAttribute("question", question);
+
+		Answer answer = Answer.builder()
+				.question(question)
+				.answerText(answerText)
+				.build();
+		answerService.save(answer);
 		
-		return "question/random";
-		
+		return ResponseEntity.ok("저장 성공");
 	}
+
 	
 	@GetMapping("/latest/{questionId}")
 	@ResponseBody
@@ -57,29 +58,26 @@ public class AnswerController {
 				.orElse(null);	// 없을 경우 null 반환
 	}
 	
+	
 	@PostMapping("/feedback")
-	public String requestAiFeedback(@RequestParam("questionId") Integer questionId, Model model) {
-		log.info("@# AnswerController : Request AI Feedback");
+	@ResponseBody
+	public Map<String, String> requestAiFeedback(@RequestParam("questionId") Integer questionId) {
+		log.info("@# Controller : Request AI Feedback");
 
-		// 가장 최근 Answer 불러오기
-		Optional<Answer> optionalAnswer = answerService.getLatestAnswer(questionId);
+		// 최신 답변 가져오기
+		Optional<Answer> latestAnswerOpt = answerService.getLatestAnswer(questionId);
 
-		if (optionalAnswer.isPresent()) {
-			Answer answer = optionalAnswer.get();
+		if (latestAnswerOpt.isPresent()) {
+			Answer latestAnswer = latestAnswerOpt.get();
 
-			if (answer.getAnswerText() != null && !answer.getAnswerText().isBlank()) {
-				answerService.saveWithFeedback(answer);  // 피드백 요청 및 저장
-				model.addAttribute("message", "AI 피드백이 저장되었습니다.");
-			} else {
-				model.addAttribute("error", "답변 내용을 먼저 작성해주세요.");
+			if (latestAnswer.getAnswerText() != null && !latestAnswer.getAnswerText().isBlank()) {
+				// 피드백 저장 처리
+				questionService.saveWithFeedback(latestAnswer.getQuestion()); // 또는 questionId 활용
+				return Collections.singletonMap("message", "AI 피드백이 저장되었습니다.");
 			}
-			model.addAttribute("question", answer.getQuestion());
-		} else {
-			model.addAttribute("error", "해당 질문에 대한 답변이 없습니다.");
-			model.addAttribute("questionId", questionId); // 혹시 템플릿에서 필요할 수 있음
 		}
 
-		return "question/random";
+		return Collections.singletonMap("message", "먼저 답변을 작성하고 저장해야 AI 피드백을 요청할 수 있습니다.");
 	}
 
 	

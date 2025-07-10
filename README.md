@@ -101,10 +101,10 @@ AI 피드백과 검색 기능을 통해 자기주도 학습을 돕는 웹 기반
 
 > ✅ 이미지 삽입 위치:
 > ![메인 화면](./src/image/main.jpg)
-> `![랜덤 질문 화면](./src/image/random_question.jpg)`  
-> `![캘린더](./src/image/calendar.jpg)`  
-> `![지원 일정](./src/image/job_application.jpg)`  
-> `![자소서 피드백](./src/image/resume.jpg)`
+> ![랜덤 질문 화면](./src/image/random_question.jpg)  
+> ![캘린더](./src/image/calendar.jpg)  
+> ![지원 일정](./src/image/job_application.jpg)  
+> ![자소서 피드백](./src/image/resume.jpg)  
 
 ---
 

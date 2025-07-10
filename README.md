@@ -99,9 +99,8 @@ AI 피드백과 검색 기능을 통해 자기주도 학습을 돕는 웹 기반
 - 일정 캘린더 등록/필터링  
 - 자소서 피드백
 
-> ✅ 이미지 삽입 위치:
 > ![메인 화면](./src/image/main.jpg)
-> ![랜덤 질문 화면](./src/image/random_question.jpg)  
+> ![랜덤 질문 화면](./src/image/random.jpg)  
 > ![캘린더](./src/image/calendar.jpg)  
 > ![지원 일정](./src/image/job_application.jpg)  
 > ![자소서 피드백](./src/image/resume.jpg)  
@@ -141,15 +140,20 @@ StudyLog/
  ├── src/
  │   ├── main/
  │   │   ├── java/com/studylog/
+ │   │   │   ├── api/
+ │   │   │   ├── config/
  │   │   │   ├── controller/
  │   │   │   ├── domain/
+ │   │   │   ├── dto/
  │   │   │   ├── repository/
  │   │   │   ├── service/
+ │   │   │   ├── solr/
+ │   │   │   ├── util/
  │   │   │   └── StudyLogApplication.java
  │   │   └── resources/
  │   │       ├── templates/
  │   │       ├── static/
- │   │       └── application.yml
+ │   │       └── application.properties
  ├── flask-server/
  │   └── app.py
  ├── solr/
